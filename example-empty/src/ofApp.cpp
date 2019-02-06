@@ -5,7 +5,15 @@ using namespace ofxCv;
 void ofApp::setup() {
 	cam.setup(1280, 720);
 	tracker.setup();
-    tracker.setTolerance(0.50);
+    tracker.setTolerance(0.999);
+    
+    yourFaceImage.setUseTexture(true);
+    
+    // set up syphon servers
+    mClient.setup();
+    mainOutputSyphonServer.setName("Syphon Screen Output");
+    individualTextureSyphonServer.setName("Syphon Texture Output");
+    mClient.set("","Simple Server");
 }
 
 void ofApp::update() {
@@ -17,31 +25,30 @@ void ofApp::update() {
 
 void ofApp::draw() {
     ofSetColor(255);
-	cam.draw(0, 0);
+    cam.draw(0, 0);
 	ofSetLineWidth(2);
-	tracker.draw();
+    tracker.draw();
     
     ofVec2f pos = tracker.getPosition();
     float scale = tracker.getScale();
-    
-//    ofPolyline noseBase = tracker.getImageFeature(ofxFaceTracker::NOSE_BASE);
-//    ofSetColor(ofColor::red);
-//    noseBase.draw();
-//    ofDrawCircle(noseBase.getCentroid2D(), 8 * tracker.getScale());
-	ofDrawBitmapString(ofToString((int) ofGetFrameRate()), 10, 20);
-    
+
+    ofDrawBitmapString(ofToString((int) ofGetFrameRate()), 10, 20);
     ofDrawBitmapString("position: (" + ofToString(pos.x) + ", " + ofToString(pos.x) + ")", 10, 50);
     ofDrawBitmapString("scale: " + ofToString((float) scale), 10, 70);
     ofNoFill();
-//    ofSetRectMode(OF_RECTMODE_CENTER);
     float faceSize = 50*scale;
     ofVec2f posCentered = ofVec2f(pos.x-faceSize/2.0, pos.y-faceSize/2.0);
     ofDrawRectangle(posCentered, faceSize, faceSize);
-//    ofSetRectMode(OF_RECTMODE_CORNER);
     
+    ofFill(); // syphon needs this for some reason
     yourFaceImage.grabScreen(posCentered.x, posCentered.y, faceSize, faceSize);
-    yourFaceImage.draw(0, 0, 300, 300);
+    yourFaceImage.draw(0, 0, 700, 700);
+    tex = yourFaceImage.getTexture();
+    tex.draw(700, 700);
     
+    mClient.draw(50, 50);
+    mainOutputSyphonServer.publishScreen();
+    individualTextureSyphonServer.publishTexture(&tex);
 }
 
 void ofApp::keyPressed(int key) {

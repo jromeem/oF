@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxCv.h"
-
+#include "ofxSyphon.h"
 #include "ofxFaceTracker.h"
 
 class ofApp : public ofBaseApp {
@@ -15,4 +15,11 @@ public:
 	ofVideoGrabber cam;
 	ofxFaceTracker tracker;
     ofImage yourFaceImage;
+    
+    ofTexture tex;
+    
+    ofxSyphonServer mainOutputSyphonServer;
+    ofxSyphonServer individualTextureSyphonServer;
+    
+    ofxSyphonClient mClient;
 };
