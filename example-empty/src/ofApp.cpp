@@ -1,3 +1,4 @@
+#include <iostream>
 #include "ofApp.h"
 
 using namespace ofxCv;
@@ -66,8 +67,22 @@ void ofApp::draw() {
 //    ff.draw();
 }
 
+void ofApp::mousePressed(int x, int y, int button) {
+    ofLog(OF_LOG_NOTICE, "button pos: " + ofToString((int) x) + ", " + ofToString((int) y));
+    ofLog(OF_LOG_NOTICE, "button: " + ofToString((int) button));
+    ff.color = ofColor(ofRandom(255), ofRandom(255), 100);
+}
+
 void ofApp::keyPressed(int key) {
 	if(key == 'r') {
 		tracker.reset();
 	}
+    if(key == 'b') {
+        ofLog(OF_LOG_NOTICE, "begin shape");
+        tracker.reset();
+    }
+    if(key == 'e') {
+        ofLog(OF_LOG_NOTICE, "end shape");
+        tracker.reset();
+    }
 }

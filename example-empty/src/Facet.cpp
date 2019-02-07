@@ -55,10 +55,12 @@ void Facet::draw() {
 
     if (trackerPtr->getFound()) {
         // finding a face change the visuals
-        ofBackground(200, 255, 100);
+        ofSetColor(100, 100, 100);
+        ofDrawRectangle(200, 200, 40, 40);
     } else {
         // no face default visuals
-        ofBackground(255, 100, 200);
+        ofSetColor(color);
+        ofDrawRectangle(200, 200, 40, 40);
     }
     
     ofSetColor(color);
