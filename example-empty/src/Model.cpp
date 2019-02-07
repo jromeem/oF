@@ -28,3 +28,7 @@ void Model::draw() {
 void Model::addFacet(const Facet& f) {
     facets.push_back(f);
 }
+
+std::vector<Facet> Model::getFacets() const {
+    return facets;
+}

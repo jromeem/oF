@@ -4,7 +4,6 @@
 using namespace ofxCv;
 
 void ofApp::setup() {
-    ff.setTracker(&tracker);
     ff.setup();
 	cam.setup(1280, 720);
 	tracker.setup();
@@ -29,6 +28,7 @@ void ofApp::update() {
 }
 
 void ofApp::draw() {
+
     ofSetColor(255);
     cam.draw(0, 0);
 	ofSetLineWidth(2);
@@ -56,21 +56,23 @@ void ofApp::draw() {
         ofDrawBitmapString("expression: " + ofToString((float) tracker.getGesture(ofxFaceTracker::MOUTH_WIDTH)), 10, 90);
     }
     
-    ff.draw();
-    lionTex = ff.canvas.getTexture();
+    for (Facet& f : mm.getFacets()) {
+        f.hasFace = tracker.getFound();
+        f.draw();
+    }
     
+    lionTex = ff.canvas.getTexture();
     mClient.draw(50, 50);
     mainOutputSyphonServer.publishScreen();
     lionTextureSyphonServer.publishTexture(&lionTex);
     faceTextureSyphonServer.publishTexture(&faceTex);
-    
-//    ff.draw();
 }
 
 void ofApp::mousePressed(int x, int y, int button) {
     ofLog(OF_LOG_NOTICE, "button pos: " + ofToString((int) x) + ", " + ofToString((int) y));
     ofLog(OF_LOG_NOTICE, "button: " + ofToString((int) button));
     ff.color = ofColor(ofRandom(255), ofRandom(255), 100);
+    ff.points.push_back(ofVec2f(x, y));
 }
 
 void ofApp::keyPressed(int key) {
@@ -78,11 +80,12 @@ void ofApp::keyPressed(int key) {
 		tracker.reset();
 	}
     if(key == 'b') {
+        ff = Facet();
+        ff.setup();
         ofLog(OF_LOG_NOTICE, "begin shape");
-        tracker.reset();
     }
     if(key == 'e') {
         ofLog(OF_LOG_NOTICE, "end shape");
-        tracker.reset();
+        mm.addFacet(ff);
     }
 }

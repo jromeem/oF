@@ -20,6 +20,7 @@ public:
     void draw();
     
     void addFacet(const Facet&);
+    std::vector<Facet> getFacets() const;
     
 private:
     std::vector<Facet> facets;
