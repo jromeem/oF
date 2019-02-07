@@ -4,10 +4,12 @@
 using namespace ofxCv;
 
 void ofApp::setup() {
-    ff.setup();
 	cam.setup(1280, 720);
-	tracker.setup();
+	
+    tracker.setup();
     tracker.setTolerance(0.999);
+    
+    canvas.allocate(1280, 720, GL_RGBA);
     
     yourFaceImage.setUseTexture(true);
     
@@ -56,12 +58,16 @@ void ofApp::draw() {
         ofDrawBitmapString("expression: " + ofToString((float) tracker.getGesture(ofxFaceTracker::MOUTH_WIDTH)), 10, 90);
     }
     
-    for (Facet& f : mm.getFacets()) {
+    canvas.begin();
+    for (auto&& f : mm) {
         f.hasFace = tracker.getFound();
         f.draw();
     }
+    canvas.end();
     
-    lionTex = ff.canvas.getTexture();
+    canvas.draw(0, 0);
+    lionTex = canvas.getTexture();
+    
     mClient.draw(50, 50);
     mainOutputSyphonServer.publishScreen();
     lionTextureSyphonServer.publishTexture(&lionTex);
@@ -86,6 +92,6 @@ void ofApp::keyPressed(int key) {
     }
     if(key == 'e') {
         ofLog(OF_LOG_NOTICE, "end shape");
-        mm.addFacet(ff);
+        mm.push_back(ff);
     }
 }

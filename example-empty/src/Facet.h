@@ -25,7 +25,6 @@ public: // place public functions or variables declarations here
     std::vector<ofVec2f> points;
     
     ofColor color;  // color using ofColor type
-    ofFbo canvas;
     
 private: // place private functions or variables declarations here
 };
