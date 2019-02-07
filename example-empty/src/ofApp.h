@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxCv.h"
+#include "Facet.h"
 #include "ofxSyphon.h"
 #include "ofxFaceTracker.h"
 
@@ -13,13 +14,20 @@ public:
 	void keyPressed(int key);
 	
 	ofVideoGrabber cam;
-	ofxFaceTracker tracker;
+    ofxFaceTracker tracker;
     ofImage yourFaceImage;
     
-    ofTexture tex;
+    ofTexture lionTex;
+    ofTexture faceTex;
+    
+    Facet ff;
     
     ofxSyphonServer mainOutputSyphonServer;
-    ofxSyphonServer individualTextureSyphonServer;
+    
+    // texture lion output
+    ofxSyphonServer lionTextureSyphonServer;
+    // texture face output
+    ofxSyphonServer faceTextureSyphonServer;
     
     ofxSyphonClient mClient;
 };
