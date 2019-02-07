@@ -19,6 +19,10 @@ public:
     ofFbo canvas;
 	ofVideoGrabber cam;
     ofxFaceTracker tracker;
+    
+    ofVec2f facePos;
+    float faceScale;
+    bool faceFound;
     ofImage yourFaceImage;
     
     ofTexture lionTex;
