@@ -7,7 +7,7 @@ void ofApp::setup() {
 	cam.setup(1280, 720);
 	
     tracker.setup();
-    tracker.setTolerance(0.999);
+    tracker.setTolerance(0.001f);
     
     canvas.allocate(1280, 720, GL_RGBA);
     yourFaceImage.setUseTexture(true);
@@ -24,6 +24,9 @@ void ofApp::setup() {
 
 void ofApp::update() {
     ff.update();
+//    for (auto&& f : mm) {
+//        f.update();
+//    }
     faceFound = tracker.getFound();
     // set the new position and scale of the face that was found
     if (faceFound) {
@@ -62,7 +65,7 @@ void ofApp::draw() {
     ofDrawRectangle(posCentered, faceSize, faceSize);
     yourFaceImage.grabScreen(posCentered.x, posCentered.y, faceSize, faceSize);
     
-//    yourFaceImage.draw(0, 0, 700, 700);
+    yourFaceImage.draw(0, 0, 700, 700);
 //    faceTex = yourFaceImage.getTexture();
     
     canvas.begin();

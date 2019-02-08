@@ -10,26 +10,26 @@
 using namespace ofxeasing;
 
 void Facet::setup() {
-    toColor = ofColor(ofRandom(255),ofRandom(255),ofRandom(255));
-    fromColor = ofColor(ofRandom(255),ofRandom(255),ofRandom(255));
+    toColor = ofColor::fromHsb(ofRandom(255),200,255);
+    fromColor = ofColor::fromHsb(ofRandom(255),200,255);
 }
 
 void Facet::update() {
-    int time = ofGetElapsedTimeMillis();
-    int thresh = 4000;
-    float lerpAmount = ofxeasing::map(time, 0, thresh, 0.f, 1.f, &ofxeasing::linear::easeIn);
-    thisColor = fromColor.getLerped(toColor, lerpAmount);
-//    ofLog(OF_LOG_NOTICE, "lerpAmount: "+ofToString((float) lerpAmount));
-//    ofLog(OF_LOG_NOTICE, "thisColor: "+ofToString((ofColor) thisColor));
-//    ofLog(OF_LOG_NOTICE, "deltaTime: "+ofToString((float) time));
     
+    int thresh = 1000;
+    int time = ofGetElapsedTimeMillis();
+    float lerpAmount = ofxeasing::map(time, 0, thresh, 0.f, 1.f, &ofxeasing::linear::easeIn);
+    fromColor.lerp(toColor, lerpAmount);
+    
+    ofLog(OF_LOG_NOTICE, "lerpAmount: "+ofToString((float) lerpAmount));
+    ofLog(OF_LOG_NOTICE, "thisColor: "+ofToString((ofColor) thisColor));
+    ofLog(OF_LOG_NOTICE, "deltaTime: "+ofToString((float) time));
+
     // reset facet color
     if (time > thresh) {
         ofResetElapsedTimeCounter();
         ofLog(OF_LOG_NOTICE, "are you ever here ##########################");
-        toColor = ofColor(ofRandom(255),ofRandom(255),ofRandom(255));
-//        thisColor = toColor;
-//        fromColor = toColor;
+        toColor = ofColor::fromHsb(ofRandom(255),200,255);
     }
 }
 
@@ -43,7 +43,7 @@ void Facet::draw() {
     ofSetColor(toColor);
     ofDrawRectangle(40, 0, 20, 20);
     
-    ofSetColor(thisColor);
+    ofSetColor(fromColor);
     // draw the shape
     ofBeginShape();
     ofVertices(points);

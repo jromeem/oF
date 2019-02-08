@@ -5,7 +5,6 @@
 #include "Facet.h"
 #include "ofxSyphon.h"
 #include "ofxEasing.h"
-#include "ofxFaceTracker.h"
 
 class ofApp : public ofBaseApp {
 public:
@@ -19,15 +18,8 @@ public:
 	
     ofFbo canvas;
 	ofVideoGrabber cam;
-    ofxFaceTracker tracker;
-    
-    ofVec2f facePos;
-    float faceScale;
-    bool faceFound;
-    ofImage yourFaceImage;
     
     ofTexture lionTex;
-    ofTexture faceTex;
     
     Facet ff;
     Model mm;
