@@ -35,14 +35,6 @@ void Facet::update() {
 
 void Facet::draw() {
     update();
-    
-    ofSetColor(fromColor);
-    ofDrawRectangle(0, 0, 20, 20);
-    ofSetColor(thisColor);
-    ofDrawRectangle(20, 0, 20, 20);
-    ofSetColor(toColor);
-    ofDrawRectangle(40, 0, 20, 20);
-    
     ofSetColor(fromColor);
     // draw the shape
     ofBeginShape();
