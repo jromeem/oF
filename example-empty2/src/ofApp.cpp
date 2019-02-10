@@ -23,6 +23,12 @@ void ofApp::loadFromFile() {
 
 void ofApp::setup() {
     // load from save file
+    debugMode = false;
+    
+    // for debug
+    selectedFacet = 0;
+    selectedVertex = 0;
+    
     ofApp::loadFromFile();
     
     canvas.allocate(1920, 1080, GL_RGBA);
@@ -51,11 +57,33 @@ void ofApp::draw() {
     ofClear(255);
     ofDrawCircle(ofGetMouseX(), ofGetMouseY(), 2);
     ofFill();
-    for (auto&& f : mm) {
-        f.draw();
+    for (int k = 0; k < mm.size(); k ++) { // same as : for (auto&& f : mm) {
+        // mm[k] : is a facet
+        if (debugMode) {
+            if (k == selectedFacet) {
+                debugFacet = mm[k];
+                mm[k].setFromColor(ofColor(ofRandom(200),ofRandom(200),ofRandom(200)));
+                // draw vertex point
+                // mm[k].points[selectedVertex] : is a vertex
+                debugPoint = mm[k].points[selectedVertex];
+                ofPushStyle();
+                ofNoFill();
+                ofSetRectMode(OF_RECTMODE_CENTER);
+                ofDrawCircle(debugPoint.x, debugPoint.y, 5);
+                ofDrawLine(debugPoint.x-15, debugPoint.y, debugPoint.x+15, debugPoint.y);
+                ofDrawLine(debugPoint.x, debugPoint.y-15, debugPoint.x, debugPoint.y+15);
+                ofPopStyle();
+            }
+        }
+        mm[k].draw();
     }
+    
     canvas.end();
     canvas.draw(0, 0);
+    
+    if (debugMode) {
+        ofDrawBitmapString("DEBUG MODE ON [PRESS 'D' TO TOGGLE OFF]", ofGetWidth()/2, ofGetHeight()/2);
+    }
     
     lionTex = canvas.getTexture();
     
@@ -85,6 +113,66 @@ void ofApp::mousePressed(int x, int y, int button) {
 }
 
 void ofApp::keyPressed(int key) {
+    if (debugMode) {
+        ofApp::keyBindingsDebugMode(key);
+    } else {
+        // key bindings for display-edit mode
+        ofApp::keyBindingsEditMode(key);
+    }
+    
+    // debug mode toggle!!
+    if (key == 'd') {
+        debugMode = !debugMode;
+    }
+    // save to file
+    if (key == 's') {
+        ofApp::saveToFile();
+    }
+}
+
+void ofApp::keyBindingsDebugMode(int key) {
+    if (key == 'q') {
+        ofLog(OF_LOG_NOTICE, "next facet");
+        int incr = selectedFacet+1;
+        selectedFacet = incr % mm.size();
+    }
+    if (key == 'w') {
+        ofLog(OF_LOG_NOTICE, "last facet");
+        int decr = selectedFacet-1;
+        if (decr < 0) {
+            decr = mm.size()-1;
+        }
+        selectedFacet = decr % mm.size();
+    }
+    if (key == 'o') {
+        ofLog(OF_LOG_NOTICE, "next vertex");
+        int incr = selectedVertex+1;
+        selectedVertex = incr % debugFacet.points.size();
+    }
+    if (key == 'p') {
+        ofLog(OF_LOG_NOTICE, "last vertex");
+        int decr = selectedVertex-1;
+        if (decr < 0) {
+            decr = debugFacet.points.size()-1;
+        }
+        selectedVertex = decr % debugFacet.points.size();
+    }
+    // fine point adjusting for each point
+    if (key == OF_KEY_LEFT) {
+        mm[selectedFacet].points[selectedVertex].x--;
+    }
+    if (key == OF_KEY_RIGHT) {
+        mm[selectedFacet].points[selectedVertex].x++;
+    }
+    if (key == OF_KEY_UP) {
+        mm[selectedFacet].points[selectedVertex].y--;
+    }
+    if (key == OF_KEY_DOWN) {
+        mm[selectedFacet].points[selectedVertex].y++;
+    }
+}
+
+void ofApp::keyBindingsEditMode(int key) {
     // mac DELETE button is OF_KEY_BACKSPACE == 8
     if (key == OF_KEY_BACKSPACE || key == OF_KEY_DEL) {
         // remove last shape
@@ -121,11 +209,6 @@ void ofApp::keyPressed(int key) {
         ofLog(OF_LOG_NOTICE, "end shape");
         mm.push_back(ff);
         facetPointsCount = 0;
-    }
-    
-    // save to file
-    if (key == 's') {
-        ofApp::saveToFile();
     }
 }
 

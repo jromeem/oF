@@ -15,20 +15,26 @@ public:
 	void draw();
 	void keyPressed(int key);
     void mousePressed(int x, int y, int button);
+    void keyBindingsEditMode(int key);
+    void keyBindingsDebugMode(int key);
     void saveToFile();
     void loadFromFile();
     
-    bool loadFile;
-    ofFile saveFile;
+    bool debugMode;
+    int selectedFacet;
+    int selectedVertex;
     
+    ofFile saveFile;
     ofFbo canvas;
     
     ofTexture lionTex;
     ofVec2f focusPoint;
     ofVec2f setPoint;
+    ofVec2f debugPoint;
     int facetPointsCount;
     
     Facet ff;
+    Facet debugFacet;
     Model mm;
     
     ofxSyphonServer lionTextureSyphonServer;

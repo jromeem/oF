@@ -15,20 +15,13 @@ void Facet::setup() {
 }
 
 void Facet::update() {
-    
     int thresh = 500;
     int time = ofGetElapsedTimeMillis();
     float lerpAmount = ofxeasing::map(time, 0, thresh, 0.f, 1.f, &ofxeasing::linear::easeIn);
     fromColor.lerp(toColor, lerpAmount);
-    
-//    ofLog(OF_LOG_NOTICE, "lerpAmount: "+ofToString((float) lerpAmount));
-//    ofLog(OF_LOG_NOTICE, "thisColor: "+ofToString((ofColor) thisColor));
-//    ofLog(OF_LOG_NOTICE, "deltaTime: "+ofToString((float) time));
-
     // reset facet color
     if (time > thresh) {
         ofResetElapsedTimeCounter();
-//        ofLog(OF_LOG_NOTICE, "are you ever here ##########################");
         toColor = ofColor::fromHsb(ofRandom(255),200,255);
     }
 }
@@ -42,3 +35,10 @@ void Facet::draw() {
     ofEndShape();
 }
 
+void Facet::setToColor(ofColor cc) {
+    toColor = ofColor(cc.r, cc.g, cc.b);
+}
+
+void Facet::setFromColor(ofColor cc) {
+    fromColor = ofColor(cc.r, cc.g, cc.b);
+}
