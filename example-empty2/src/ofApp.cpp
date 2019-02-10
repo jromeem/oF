@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include "ofApp.h"
 
 using namespace ofxCv;
@@ -14,14 +15,44 @@ void ofApp::loadFromFile() {
         ofLog(OF_LOG_NOTICE, ofToString(vertices.size()));
         for (int i = 0; i < vertices.size(); i+=2) {
             ofVec2f point = ofVec2f(stoi(vertices[i]), stoi(vertices[i+1]));
-            ff.points.push_back(point);
+            ff.points.push_back(std::make_shared<ofVec2f>(point));
         }
         mm.push_back(ff);
         linesOfTheFile.push_back(line);
     }
 }
 
+void ofApp::facets2Mesh() {
+    float distThresh = 5;
+    
+    mm.size();
+    // wowo
+    for (int i = 0; i < mm.size(); i++) {
+        for (int j = 0; j < mm[i].points.size(); j++) {
+            for (int k = i + 1; k < mm.size(); k++) {
+                for (int l = 0; l < mm[k].points.size(); l++) {
+                    auto& curPoint = mm[i].points[j];
+                    auto& thisPoint = mm[k].points[l];
+                    
+                    auto foundDist = ofDist(curPoint->x, curPoint->y, thisPoint->x, thisPoint->y);
+                    ofLog(OF_LOG_NOTICE, "distane is " + ofToString(foundDist));
+                    if (foundDist < distThresh) {
+                        ofLog(OF_LOG_NOTICE, "distane small");
+                        mm[k].points[l] = mm[i].points[j];
+                    }
+                    
+                }
+            }
+        }
+    }
+}
+
 void ofApp::setup() {
+    // initialize pointer variables
+    focusPoint = std::make_shared<ofVec2f>();
+    setPoint = std::make_shared<ofVec2f>();
+    debugPoint = std::make_shared<ofVec2f>();
+    
     // load from save file
     debugMode = false;
     
@@ -29,9 +60,14 @@ void ofApp::setup() {
     selectedFacet = 0;
     selectedVertex = 0;
     
+    // after loading, facets are made, and pushed to model
     ofApp::loadFromFile();
     
-    canvas.allocate(1920, 1080, GL_RGBA);
+    // create mesh
+    ofApp::facets2Mesh();
+    
+    // canvas.allocate(1920, 1080, GL_RGBA);
+    canvas.allocate(920, 580, GL_RGBA);
     ofEnableSmoothing();
     
     printf( "%i, %i, %i, %i", ofGetWidth(), ofGetHeight(), ofGetScreenWidth(), ofGetScreenHeight() );
@@ -69,9 +105,9 @@ void ofApp::draw() {
                 ofPushStyle();
                 ofNoFill();
                 ofSetRectMode(OF_RECTMODE_CENTER);
-                ofDrawCircle(debugPoint.x, debugPoint.y, 5);
-                ofDrawLine(debugPoint.x-15, debugPoint.y, debugPoint.x+15, debugPoint.y);
-                ofDrawLine(debugPoint.x, debugPoint.y-15, debugPoint.x, debugPoint.y+15);
+                ofDrawCircle(debugPoint->x, debugPoint->y, 5);
+                ofDrawLine(debugPoint->x-15, debugPoint->y, debugPoint->x+15, debugPoint->y);
+                ofDrawLine(debugPoint->x, debugPoint->y-15, debugPoint->x, debugPoint->y+15);
                 ofPopStyle();
             }
         }
@@ -91,9 +127,9 @@ void ofApp::draw() {
     ofPushStyle();
     ofNoFill();
     ofSetRectMode(OF_RECTMODE_CENTER);
-    ofDrawCircle(focusPoint.x, focusPoint.y, 5);
-    ofDrawLine(focusPoint.x-15, focusPoint.y, focusPoint.x+15, focusPoint.y);
-    ofDrawLine(focusPoint.x, focusPoint.y-15, focusPoint.x, focusPoint.y+15);
+    ofDrawCircle(focusPoint->x, focusPoint->y, 5);
+    ofDrawLine(focusPoint->x-15, focusPoint->y, focusPoint->x+15, focusPoint->y);
+    ofDrawLine(focusPoint->x, focusPoint->y-15, focusPoint->x, focusPoint->y+15);
     ofPopStyle();
     
     ofFill();
@@ -105,8 +141,8 @@ void ofApp::mousePressed(int x, int y, int button) {
     if (facetPointsCount > 0) {
         ff.points.push_back(setPoint);
     }
-    focusPoint = ofVec2f(x, y);
-    setPoint = ofVec2f(x, y);
+    focusPoint = std::make_shared<ofVec2f>(x, y);
+    setPoint = std::make_shared<ofVec2f>(x, y);
     ff.color = ofColor(ofRandom(255), ofRandom(255), 100);
 
     facetPointsCount++;
@@ -159,16 +195,16 @@ void ofApp::keyBindingsDebugMode(int key) {
     }
     // fine point adjusting for each point
     if (key == OF_KEY_LEFT) {
-        mm[selectedFacet].points[selectedVertex].x--;
+        mm[selectedFacet].points[selectedVertex]->x--;
     }
     if (key == OF_KEY_RIGHT) {
-        mm[selectedFacet].points[selectedVertex].x++;
+        mm[selectedFacet].points[selectedVertex]->x++;
     }
     if (key == OF_KEY_UP) {
-        mm[selectedFacet].points[selectedVertex].y--;
+        mm[selectedFacet].points[selectedVertex]->y--;
     }
     if (key == OF_KEY_DOWN) {
-        mm[selectedFacet].points[selectedVertex].y++;
+        mm[selectedFacet].points[selectedVertex]->y++;
     }
 }
 
@@ -184,16 +220,16 @@ void ofApp::keyBindingsEditMode(int key) {
     
     // fine point adjusting for each point
     if (key == OF_KEY_LEFT) {
-        setPoint.x = focusPoint.x--;
+        setPoint->x = focusPoint->x--;
     }
     if (key == OF_KEY_RIGHT) {
-        setPoint.x = focusPoint.x++;
+        setPoint->x = focusPoint->x++;
     }
     if (key == OF_KEY_UP) {
-        setPoint.y = focusPoint.y--;
+        setPoint->y = focusPoint->y--;
     }
     if (key == OF_KEY_DOWN) {
-        setPoint.y = focusPoint.y++;
+        setPoint->y = focusPoint->y++;
     }
     
     // begining and ending a shape
@@ -220,7 +256,7 @@ void ofApp::saveToFile() {
     saveFile.open("facets-vertex-data.txt",ofFile::WriteOnly);
     for (auto&& f : mm) {
         for (auto&& p : f.points) {
-            saveFile << ofToString((int) p.x) + " " + ofToString((int) p.y) + " ";
+            saveFile << ofToString((int) p->x) + " " + ofToString((int) p->y) + " ";
         }
         saveFile << "\n";
     }

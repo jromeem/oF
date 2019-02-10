@@ -31,7 +31,9 @@ void Facet::draw() {
     ofSetColor(fromColor);
     // draw the shape
     ofBeginShape();
-    ofVertices(points);
+    for (auto&& p : points) {
+        ofVertex(p->x, p->y);
+    }
     ofEndShape();
 }
 

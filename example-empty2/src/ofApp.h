@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "ofMain.h"
 #include "ofxCv.h"
 #include "Facet.h"
@@ -19,6 +21,7 @@ public:
     void keyBindingsDebugMode(int key);
     void saveToFile();
     void loadFromFile();
+    void facets2Mesh();
     
     bool debugMode;
     int selectedFacet;
@@ -28,9 +31,9 @@ public:
     ofFbo canvas;
     
     ofTexture lionTex;
-    ofVec2f focusPoint;
-    ofVec2f setPoint;
-    ofVec2f debugPoint;
+    std::shared_ptr<ofVec2f> focusPoint;
+    std::shared_ptr<ofVec2f> setPoint;
+    std::shared_ptr<ofVec2f> debugPoint;
     int facetPointsCount;
     
     Facet ff;

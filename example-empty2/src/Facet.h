@@ -8,6 +8,8 @@
 #ifndef Facet_h
 #define Facet_h
 
+#include <memory>
+
 #include "ofMain.h"
 #include "ofxEasing.h"
 #include "ofxFaceTracker.h"
@@ -31,7 +33,7 @@ public: // place public functions or variables declarations here
     ofColor toColor;
     ofColor thisColor;
     
-    std::vector<ofVec2f> points;
+    std::vector<std::shared_ptr<ofVec2f>> points;
     
     ofColor color;  // color using ofColor type
     
