@@ -15,7 +15,12 @@ public:
 	void draw();
 	void keyPressed(int key);
     void mousePressed(int x, int y, int button);
-	
+    void saveToFile();
+    void loadFromFile();
+    
+    bool loadFile;
+    ofFile saveFile;
+    
     ofFbo canvas;
     
     ofTexture lionTex;
@@ -26,8 +31,6 @@ public:
     Facet ff;
     Model mm;
     
-    ofxSyphonServer mainOutputSyphonServer;
     ofxSyphonServer lionTextureSyphonServer;
-    ofxSyphonServer faceTextureSyphonServer;
     ofxSyphonClient mClient;
 };
