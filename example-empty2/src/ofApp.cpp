@@ -260,5 +260,6 @@ void ofApp::saveToFile() {
         }
         saveFile << "\n";
     }
+    saveFile.close();
     ofLog(OF_LOG_NOTICE, "facets saved to 'facets-vertex-data.txt'!");
 }

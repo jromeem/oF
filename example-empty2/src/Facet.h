@@ -33,6 +33,7 @@ public: // place public functions or variables declarations here
     ofColor toColor;
     ofColor thisColor;
     
+    // treat shared_ptr<ofVec2f> like ofVec2f*
     std::vector<std::shared_ptr<ofVec2f>> points;
     
     ofColor color;  // color using ofColor type
