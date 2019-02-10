@@ -17,9 +17,11 @@ public:
     void mousePressed(int x, int y, int button);
 	
     ofFbo canvas;
-	ofVideoGrabber cam;
     
     ofTexture lionTex;
+    ofVec2f focusPoint;
+    ofVec2f setPoint;
+    int facetPointsCount;
     
     Facet ff;
     Model mm;
