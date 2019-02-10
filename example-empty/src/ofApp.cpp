@@ -4,6 +4,8 @@
 using namespace ofxCv;
 
 void ofApp::setup() {
+    ofSetDataPathRoot("../Resources/data/");
+    
 	cam.setup(1280, 720);
 	
     tracker.setup();
@@ -35,17 +37,6 @@ void ofApp::update() {
 
 void ofApp::draw() {
     cam.draw(0, 0);
-    
-    if (faceFound) {
-        // update the postion and scale on the found face
-//        ofDrawBitmapString(ofToString((int) ofGetFrameRate()), 10, 20);
-//        ofDrawBitmapString("position: (" + ofToString(facePos.x) + ", " + ofToString(facePos.x) + ")", 10, 50);
-//        ofDrawBitmapString("scale: " + ofToString((float) faceScale), 10, 70);
-//        ofDrawBitmapString("expression: " + ofToString((float) tracker.getGesture(ofxFaceTracker::MOUTH_WIDTH)), 10, 90);
-        //tracker.draw();
-    } else {
-//        ofDrawBitmapString("face not found!", 10, 20);
-    }
 
     float faceSize = 50*faceScale;
     ofVec2f posCentered = ofVec2f(facePos.x-faceSize/2.0, facePos.y-faceSize/2.0);
