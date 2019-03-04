@@ -1,0 +1,7 @@
+ofxCv
+ofxEasing
+ofxEasingFunc
+ofxFaceTracker
+ofxGui
+ofxOpenCv
+ofxSyphon
